@@ -1,0 +1,20 @@
+{
+  "name": "@sse-icons/api",
+  "version": "1.0.0",
+  "description": "API For SSE",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "github.com/sse-icons/api"
+  },
+  "author": "SSE World",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^5.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.3"
+  }
+}
