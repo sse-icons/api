@@ -1,0 +1,1 @@
+exports.allowedCategories = ["oauth", "oidc", "email", "adapter", "others"];
