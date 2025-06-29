@@ -1,6 +1,6 @@
-const Icons = require("../models/icons.js");
-const { svgToURL } = require("../utils/css.js");
-const { allowedCategories } = require("../utils/categories.js");
+const Icons = require("../../models/icons.js");
+const { svgToURL } = require("../../utils/css.js");
+const { allowedCategories } = require("../../utils/categories.js");
 
 exports.getIcons = async (req, res) => {
   try {
@@ -101,61 +101,6 @@ exports.createIcon = async (req, res) => {
     res.status(201).json(newIcon);
   } catch (error) {
     console.error("Error creating icon:", error);
-    res.status(500).json({ error: "Internal Server Error" });
-  }
-};
-
-exports.getIconsCss = async (req, res, next) => {
-  const { category } = req.query; // Assuming you want to filter by category
-  res.set("Content-Type", "text/css");
-
-  try {
-    // Validate category if provided
-    if (
-      category &&
-      !allowedCategories.includes(category) &&
-      category !== "all"
-    ) {
-      const error = new Error(
-        "Invalid category. Allowed categories are: " +
-          allowedCategories.join(", ")
-      );
-      error.status = 400;
-      return next(error);
-    }
-
-    let query = {};
-    if (category && category !== "all") {
-      if (category === "oauth") {
-        query.categories = "OAuth";
-      } else if (category === "oidc") {
-        query.categories = "OIDC";
-      } else if (category === "email") {
-        query.categories = "Email";
-      } else if (category === "adapter") {
-        query.categories = "Adapter";
-      } else if (category === "others") {
-        query.categories = "Others";
-      }
-    }
-
-    const icons = await Icons.find(query);
-
-    if (!icons || icons.length === 0) {
-      return res.status(404).send("No icons found for the specified category.");
-    }
-
-    let cssContent = icons
-      .map((icon) => {
-        return `.icon-${icon.id} {
-  background-image: ${svgToURL(icon.body)}; 
-}\n`;
-      })
-      .join("");
-
-    res.send(cssContent);
-  } catch (error) {
-    console.error("Error generating CSS:", error);
     res.status(500).json({ error: "Internal Server Error" });
   }
 };

@@ -1,9 +1,14 @@
+// Package imports
 const express = require("express");
+const rateLimit = require("express-rate-limit");
+const cookieParse = require("cookie-parser");
+const logger = require("morgan");
+
+// Files
 const { notFound } = require("./middleware/notfound.js");
 const { errorHandler } = require("./middleware/error.js");
 const { PORT } = require("./utils/env.js");
 const connectDB = require("./utils/connect.js");
-const rateLimit = require("express-rate-limit");
 const iconsRouter = require("./router/icons.js");
 
 // Use
@@ -19,6 +24,8 @@ const limiter = rateLimit({
 // Use apps
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieParse());
+app.use(logger("dev"));
 
 // Connect to MongoDB
 connectDB();

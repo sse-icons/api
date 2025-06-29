@@ -1,4 +1,5 @@
-const { getIcons, createIcon, getIconByCategory, getIconSvg, getIconsCss, getIconsCssMin, deleteIcon } = require("../controllers/icons.js");
+const { getIcons, createIcon, getIconByCategory, getIconSvg, getIconsCssMin, deleteIcon } = require("../controllers/icons/icons.js");
+const { getIconsCss } = require("../controllers/icons/css.js");
 const express = require("express");
 const router = express.Router();
 
@@ -7,7 +8,6 @@ router.get("/", getIcons);
 router.get("/:category.json", getIconByCategory);
 router.get("/:iconId.svg", getIconSvg);
 router.get("/:category.css", getIconsCss);
-router.get("/:category.min.css", getIconsCssMin);
 
 // POST - Icons
 router.post("/", createIcon);
