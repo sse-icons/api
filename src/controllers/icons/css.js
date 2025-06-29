@@ -7,9 +7,8 @@ const {
 
 exports.getIconsCss = async (req, res, next) => {
   const { category } = req.params;
-  const { icons } = req.query;
+  const { icons, type } = req.query;
   const iconsNames = icons ? icons.split(",") : [];
-  res.set("Content-Type", "text/css");
 
   try {
     if (
@@ -41,9 +40,14 @@ exports.getIconsCss = async (req, res, next) => {
         (iconName) => !filteredIcons.some((icon) => icon.id === iconName)
       );
 
-      const errorMessage = notFoundIcons.length > 0 ? notFoundIcons.map((name) => '/* Icons not found: ' + name + '*/\n').join('') : ""
+      const errorMessage =
+        notFoundIcons.length > 0
+          ? notFoundIcons
+              .map((name) => "/* Icons not found: " + name + "*/\n")
+              .join("")
+          : "";
 
-      return res.send(
+      const contentM =
         filteredIcons
           .map(
             (icon) =>
@@ -51,7 +55,24 @@ exports.getIconsCss = async (req, res, next) => {
   --svg: ${svgToURL(icon.body)}; 
 }`
           )
-          .join("\n\n") + (errorMessage ? "\n\n" + errorMessage : "")
+          .join("\n\n") + (errorMessage ? "\n\n" + errorMessage : "");
+
+      if (type === "min") {
+        res.set("Content-Type", "text/css");
+        res.send(contentM.replace(/\s+/g, " ").trim());
+      }
+
+      res.set("Content-Type", "text/css");
+      return res.send(
+        //         filteredIcons
+        //           .map(
+        //             (icon) =>
+        //               `.icon-${icon.id} {
+        //   --svg: ${svgToURL(icon.body)};
+        // }`
+        //           )
+        //           .join("\n\n") + (errorMessage ? "\n\n" + errorMessage : "")
+        contentM
       );
     }
 
@@ -72,6 +93,12 @@ exports.getIconsCss = async (req, res, next) => {
       )
       .join("\n\n");
 
+    if (type === "min") {
+      res.set("Content-Type", "text/css");
+      return res.send(cssContent.replace(/\s+/g, " ").trim());
+    }
+
+    res.set("Content-Type", "text/css");
     res.send(cssContent);
   } catch (error) {
     const err = new Error("Error fetching icons:", error);
