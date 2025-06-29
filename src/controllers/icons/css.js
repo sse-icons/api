@@ -57,23 +57,11 @@ exports.getIconsCss = async (req, res, next) => {
           )
           .join("\n\n") + (errorMessage ? "\n\n" + errorMessage : "");
 
-      if (type === "min") {
-        res.set("Content-Type", "text/css");
-        res.send(contentM.replace(/\s+/g, " ").trim());
-      }
-
       res.set("Content-Type", "text/css");
-      return res.send(
-        //         filteredIcons
-        //           .map(
-        //             (icon) =>
-        //               `.icon-${icon.id} {
-        //   --svg: ${svgToURL(icon.body)};
-        // }`
-        //           )
-        //           .join("\n\n") + (errorMessage ? "\n\n" + errorMessage : "")
-        contentM
-      );
+      if (type === "min") {
+        return res.send(contentM.replace(/\s+/g, " ").trim());
+      }
+      return res.send(contentM);
     }
 
     if (!iconsData || iconsData.length === 0) {
@@ -93,15 +81,13 @@ exports.getIconsCss = async (req, res, next) => {
       )
       .join("\n\n");
 
+    res.set("Content-Type", "text/css");
     if (type === "min") {
-      res.set("Content-Type", "text/css");
       return res.send(cssContent.replace(/\s+/g, " ").trim());
     }
-
-    res.set("Content-Type", "text/css");
-    res.send(cssContent);
+    return res.send(cssContent);
   } catch (error) {
-    const err = new Error("Error fetching icons:", error);
+    const err = new Error("Error fetching icons: " + error.message);
     err.status = 500;
     return next(err);
   }
